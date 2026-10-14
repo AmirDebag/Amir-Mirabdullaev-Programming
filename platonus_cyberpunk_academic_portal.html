@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLATONUS // CYBER-ACADEMIC MATRIX v9.0</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#08080c',
+                            dark: '#0e0e17',
+                            card: '#12121f',
+                            border: '#1e1e36',
+                            cyan: '#00f0ff',
+                            green: '#00ff66',
+                            pink: '#ff0055',
+                            yellow: '#ffe600',
+                            purple: '#b000ff'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'Courier New', 'monospace'],
+                        display: ['Impact', 'Arial Black', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'neon-cyan': '0 0 15px rgba(0, 240, 255, 0.5), 0 0 30px rgba(0, 240, 255, 0.2)',
+                        'neon-pink': '0 0 15px rgba(255, 0, 85, 0.5), 0 0 30px rgba(255, 0, 85, 0.2)',
+                        'neon-green': '0 0 15px rgba(0, 255, 102, 0.5), 0 0 30px rgba(0, 255, 102, 0.2)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #08080c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00f0ff;
+            box-shadow: 0 0 10px #00f0ff;
+        }
+
+        /* Scanline CRT Overlay */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 0, 0, 0.4) 50%,
+                rgba(0, 0, 0, 0.4)
+            );
+            background-size: 100% 4px;
+        }
+
+        /* Grid Background */
+        .cyber-grid {
+            background-size: 30px 30px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+        }
+
+        /* Glitch Text Effect */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip: rect(0, 0, 0, 0);
+        }
+        .glitch-active::before {
+            left: -2px;
+            text-shadow: 2px 0 #00f0ff;
+            clip: rect(10px, 9999px, 40px, 0);
+            animation: glitch-anim 0.2s infinite linear alternate-reverse;
+        }
+        .glitch-active::after {
+            left: 2px;
+            text-shadow: -2px 0 #ff0055;
+            clip: rect(50px, 9999px, 80px, 0);
+            animation: glitch-anim2 0.2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(15px, 9999px, 35px, 0); }
+            50% { clip: rect(40px, 9999px, 10px, 0); }
+            100% { clip: rect(60px, 9999px, 80px, 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(70px, 9999px, 20px, 0); }
+            50% { clip: rect(10px, 9999px, 50px, 0); }
+            100% { clip: rect(30px, 9999px, 90px, 0); }
+        }
+
+        /* Custom Cursor */
+        @media (pointer: fine) {
+            body { cursor: none; }
+        }
+        #custom-cursor {
+            pointer-events: none;
+            transition: transform 0.05s ease-out;
+        }
+
+        /* Corner Cut Shapes */
+        .clip-corner {
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+        }
+        .clip-corner-lg {
+            clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+        }
+
+        /* Pulse Animations */
+        .pulse-cyan {
+            animation: pulseCyan 2s infinite;
+        }
+        @keyframes pulseCyan {
+            0%, 100% { box-shadow: 0 0 5px rgba(0,240,255,0.4); }
+            50% { box-shadow: 0 0 20px rgba(0,240,255,0.8); }
+        }
+    </style>
+</head>
+<body class="bg-cyber-bg text-gray-200 font-mono antialiased selection:bg-cyber-pink selection:text-black overflow-x-hidden">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor" class="fixed top-0 left-0 w-8 h-8 border-2 border-cyber-cyan rounded-full z-50 -translate-x-1/2 -translate-y-1/2 mix-blend-difference hidden md:block">
+        <div class="w-2 h-2 bg-cyber-pink rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+    </div>
+
+    <!-- Animated Particle Canvas Background -->
+    <canvas id="bg-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+
+    <!-- Overlay FX -->
+    <div class="fixed inset-0 scanlines pointer-events-none z-40 opacity-25"></div>
+    <div class="fixed inset-0 cyber-grid pointer-events-none z-0"></div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="relative z-10 min-h-screen flex flex-col max-w-[1600px] mx-auto p-2 sm:p-4 lg:p-6 space-y-6">
+
+        <!-- HEADER & CYBER STUDENT ID BAR -->
+        <header class="bg-cyber-dark/90 border-2 border-cyber-border p-4 clip-corner-lg shadow-2xl relative backdrop-blur">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-4">
+                
+                <!-- Brand & Logo -->
+                <div class="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-start">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-cyber-pink flex items-center justify-center font-black text-black text-2xl tracking-tighter clip-corner shadow-neon-pink">
+                            PL
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h1 class="text-2xl font-black text-white tracking-widest glitch-text glitch-active" id="logo-text" data-text="PLATONUS//MATRIX">
+                                    PLATONUS<span class="text-cyber-cyan">//</span>MATRIX
+                                </h1>
+                                <span class="text-[10px] bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan px-2 py-0.5 font-bold">v9.0.4</span>
+                            </div>
+                            <p class="text-[11px] text-gray-400 tracking-wider">ACADEMIC MANAGEMENT TERMINAL</p>
+                        </div>
+                    </div>
+
+                    <!-- Audio & Glitch Controls -->
+                    <div class="flex items-center gap-2">
+                        <button id="sound-toggle" class="p-2 border border-cyber-border bg-cyber-card hover:border-cyber-cyan text-gray-300 hover:text-cyber-cyan transition-all text-xs flex items-center gap-1.5" title="Toggle Sound Engine">
+                            <i data-lucide="volume-x" id="sound-off" class="w-4 h-4"></i>
+                            <i data-lucide="volume-2" id="sound-on" class="w-4 h-4 text-cyber-green hidden"></i>
+                            <span class="text-[10px] hidden sm:inline">AUDIO</span>
+                        </button>
+
+                        <button id="glitch-toggle" class="p-2 border border-cyber-pink/50 bg-cyber-pink/10 hover:bg-cyber-pink text-cyber-pink hover:text-black transition-all text-xs flex items-center gap-1 font-bold" title="Toggle Visual Overdrive">
+                            <i data-lucide="zap" class="w-4 h-4"></i>
+                            <span class="text-[10px] hidden sm:inline">OVERDRIVE</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Student Cyber-ID HUD Card -->
+                <div class="w-full lg:w-auto bg-cyber-card border border-cyber-border p-3 clip-corner flex flex-wrap items-center justify-between lg:justify-end gap-6 text-xs">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 border border-cyber-cyan bg-cyber-black flex items-center justify-center relative overflow-hidden">
+                            <i data-lucide="user" class="w-6 h-6 text-cyber-cyan"></i>
+                            <div class="absolute bottom-0 inset-x-0 h-1 bg-cyber-green"></div>
+                        </div>
+                        <div>
+                            <div class="text-white font-extrabold tracking-wider flex items-center gap-2">
+                                ALEXEY V. KUZNETSOV
+                                <span class="w-2 h-2 rounded-full bg-cyber-green animate-ping"></span>
+                            </div>
+                            <div class="text-[10px] text-gray-400">ID: <span class="text-cyber-yellow">#80492-CS</span> | SEMESTER VI</div>
+                        </div>
+                    </div>
+
+                    <div class="hidden sm:block border-l border-cyber-border h-8"></div>
+
+                    <div class="space-y-0.5">
+                        <div class="text-[10px] text-gray-500 uppercase">// SPECIALIZATION</div>
+                        <div class="text-cyber-cyan font-bold">SOFTWARE ENGINEERING</div>
+                    </div>
+
+                    <div class="hidden sm:block border-l border-cyber-border h-8"></div>
+
+                    <div class="space-y-0.5">
+                        <div class="text-[10px] text-gray-500 uppercase">// MATRIX STATUS</div>
+                        <div class="text-cyber-green font-bold flex items-center gap-1">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> ACTIVE_ONLINE
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </header>
+
+        <!-- TICKER BULLETIN / ANNOUNCEMENTS -->
+        <div class="bg-cyber-card border border-cyber-border p-2 clip-corner flex items-center gap-3 text-xs overflow-hidden">
+            <span class="bg-cyber-pink text-black px-2 py-0.5 font-extrabold text-[10px] tracking-wider whitespace-nowrap clip-corner flex items-center gap-1">
+                <i data-lucide="bell" class="w-3 h-3"></i> SYSTEM_ALERT
+            </span>
+            <div class="overflow-hidden whitespace-nowrap w-full">
+                <div id="ticker-text" class="inline-block animate-marquee text-gray-300 font-mono text-[11px]">
+                    /// MIDTERM EXAM PROTOCOL ACTIVE FOR SEMESTER VI /// CAMPUS CYBER-HACKATHON REGISTRATION OPEN (PRIZE POOL: 500,000 KZT) /// FINANCIAL DEADLINE: TUITION INSTALLMENT #3 DUE BY OCT 25 /// LIBRARY E-BOOKS REPOSITORY UPDATED WITH AI MODULES ///
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN DASHBOARD CONTENT GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- LEFT COLUMN: NAVIGATION & QUICK METRICS (Col Span 3) -->
+            <div class="lg:col-span-3 space-y-6">
+                
+                <!-- Quick Navigation Terminal -->
+                <nav class="bg-cyber-dark border border-cyber-border p-4 clip-corner space-y-2">
+                    <div class="text-[10px] text-cyber-cyan font-bold tracking-widest uppercase mb-3">// MATRIX_NAVIGATION</div>
+                    
+                    <button data-tab="tab-overview" class="nav-btn active w-full p-2.5 text-left text-xs font-bold uppercase border border-cyber-cyan bg-cyber-cyan/10 text-cyber-cyan hover:bg-cyber-cyan/20 transition-all clip-corner flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview / Обзор</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+
+                    <button data-tab="tab-grades" class="nav-btn w-full p-2.5 text-left text-xs font-bold uppercase border border-cyber-border bg-cyber-card text-gray-400 hover:text-white hover:border-cyber-pink transition-all clip-corner flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i data-lucide="award" class="w-4 h-4"></i> Gradebook / Успеваемость</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+
+                    <button data-tab="tab-schedule" class="nav-btn w-full p-2.5 text-left text-xs font-bold uppercase border border-cyber-border bg-cyber-card text-gray-400 hover:text-white hover:border-cyber-yellow transition-all clip-corner flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4"></i> Timetable / Расписание</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+
+                    <button data-tab="tab-testing" class="nav-btn w-full p-2.5 text-left text-xs font-bold uppercase border border-cyber-border bg-cyber-card text-gray-400 hover:text-white hover:border-cyber-green transition-all clip-corner flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i data-lucide="cpu" class="w-4 h-4"></i> Testing Terminal / СДО</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+
+                    <button data-tab="tab-finance" class="nav-btn w-full p-2.5 text-left text-xs font-bold uppercase border border-cyber-border bg-cyber-card text-gray-400 hover:text-white hover:border-cyber-cyan transition-all clip-corner flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i data-lucide="credit-card" class="w-4 h-4"></i> Finance / Оплата</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                </nav>
+
+                <!-- Academic Gauges Card -->
+                <div class="bg-cyber-dark border border-cyber-border p-4 clip-corner space-y-4">
+                    <div class="text-[10px] text-cyber-pink font-bold tracking-widest uppercase">// ACADEMIC_GAUGES</div>
+
+                    <!-- GPA Gauge -->
+                    <div class="bg-cyber-card p-3 border border-cyber-border clip-corner relative">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">CUMULATIVE GPA</span>
+                            <span class="text-lg font-black text-cyber-green">3.92 <span class="text-xs text-gray-500">/ 4.00</span></span>
+                        </div>
+                        <div class="w-full h-2 bg-cyber-black overflow-hidden border border-cyber-border">
+                            <div class="h-full bg-gradient-to-r from-cyber-cyan to-cyber-green w-[98%]"></div>
+                        </div>
+                        <div class="text-[10px] text-gray-500 mt-1 flex justify-between">
+                            <span>HONORS LEVEL</span>
+                            <span>98th PERCENTILE</span>
+                        </div>
+                    </div>
+
+                    <!-- Credit Progress Bar -->
+                    <div class="bg-cyber-card p-3 border border-cyber-border clip-corner">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">ECTS CREDITS</span>
+                            <span class="text-sm font-bold text-cyber-cyan">142 <span class="text-xs text-gray-500">/ 180</span></span>
+                        </div>
+                        <div class="w-full h-2 bg-cyber-black overflow-hidden border border-cyber-border">
+                            <div class="h-full bg-cyber-cyan w-[78.8%]"></div>
+                        </div>
+                        <div class="text-[10px] text-gray-500 mt-1 flex justify-between">
+                            <span>PROGRESS: 78.8%</span>
+                            <span>38 ECTS REMAINING</span>
+                        </div>
+                    </div>
+
+                    <!-- Telemetry Stats -->
+                    <div class="grid grid-cols-2 gap-2 text-center text-xs">
+                        <div class="bg-cyber-black p-2 border border-cyber-border">
+                            <div class="text-gray-500 text-[10px]">ATTENDANCE</div>
+                            <div class="text-cyber-green font-bold text-base">96.4%</div>
+                        </div>
+                        <div class="bg-cyber-black p-2 border border-cyber-border">
+                            <div class="text-gray-500 text-[10px]">TASKS DONE</div>
+                            <div class="text-cyber-yellow font-bold text-base">28/30</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integrated Command Terminal Simulator Widget -->
+                <div class="bg-cyber-dark border border-cyber-border p-3 clip-corner space-y-2">
+                    <div class="flex items-center justify-between border-b border-cyber-border pb-2 text-[10px] text-gray-400">
+                        <span class="text-cyber-yellow font-bold">// COMMAND_SHELL</span>
+                        <span>TTY_SYS_01</span>
+                    </div>
+
+                    <div id="cli-output" class="h-32 overflow-y-auto text-[11px] font-mono space-y-1 text-gray-300">
+                        <p class="text-gray-500">> Platonus Cyber-Kernel Loaded.</p>
+                        <p class="text-cyber-cyan">> Type 'help' for available commands.</p>
+                    </div>
+
+                    <form id="cli-form" class="flex items-center gap-1 pt-1 border-t border-cyber-border">
+                        <span class="text-cyber-pink font-bold text-xs">$</span>
+                        <input type="text" id="cli-input" placeholder="enter command..." class="w-full bg-transparent text-xs text-cyber-green focus:outline-none font-mono">
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- RIGHT MAIN PANEL: DYNAMIC TABS (Col Span 9) -->
+            <div class="lg:col-span-9">
+
+                <!-- TAB 1: OVERVIEW DASHBOARD -->
+                <div id="tab-overview" class="tab-content space-y-6">
+                    
+                    <!-- Quick Access Cards -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                        <div data-target="tab-grades" class="quick-link cursor-pointer p-3 bg-cyber-dark border border-cyber-border hover:border-cyber-pink transition-all clip-corner group text-center space-y-2">
+                            <i data-lucide="file-text" class="w-6 h-6 mx-auto text-cyber-pink group-hover:scale-110 transition-transform"></i>
+                            <div class="text-[11px] font-bold uppercase text-gray-200">Журнал</div>
+                        </div>
+
+                        <div data-target="tab-schedule" class="quick-link cursor-pointer p-3 bg-cyber-dark border border-cyber-border hover:border-cyber-cyan transition-all clip-corner group text-center space-y-2">
+                            <i data-lucide="clock" class="w-6 h-6 mx-auto text-cyber-cyan group-hover:scale-110 transition-transform"></i>
+                            <div class="text-[11px] font-bold uppercase text-gray-200">Расписание</div>
+                        </div>
+
+                        <div data-target="tab-testing" class="quick-link cursor-pointer p-3 bg-cyber-dark border border-cyber-border hover:border-cyber-green transition-all clip-corner group text-center space-y-2">
+                            <i data-lucide="check-square" class="w-6 h-6 mx-auto text-cyber-green group-hover:scale-110 transition-transform"></i>
+                            <div class="text-[11px] font-bold uppercase text-gray-200">Тестирование</div>
+                        </div>
+
+                        <div class="p-3 bg-cyber-dark border border-cyber-border hover:border-cyber-yellow transition-all clip-corner group text-center space-y-2 cursor-pointer">
+                            <i data-lucide="book-open" class="w-6 h-6 mx-auto text-cyber-yellow group-hover:scale-110 transition-transform"></i>
+                            <div class="text-[11px] font-bold uppercase text-gray-200">Библиотека</div>
+                        </div>
+
+                        <div data-target="tab-finance" class="quick-link cursor-pointer p-3 bg-cyber-dark border border-cyber-border hover:border-cyber-purple transition-all clip-corner group text-center space-y-2">
+                            <i data-lucide="dollar-sign" class="w-6 h-6 mx-auto text-cyber-purple group-hover:scale-110 transition-transform"></i>
+                            <div class="text-[11px] font-bold uppercase text-gray-200">Оплата</div>
+                        </div>
+
+                        <div class="p-3 bg-cyber-dark border border-cyber-border hover:border-cyber-cyan transition-all clip-corner group text-center space-y-2 cursor-pointer">
+                            <i data-lucide="folder-git-2" class="w-6 h-6 mx-auto text-cyber-cyan group-hover:scale-110 transition-transform"></i>
+                            <div class="text-[11px] font-bold uppercase text-gray-200">СДО / Задания</div>
+                        </div>
+                    </div>
+
+                    <!-- Today's Schedule Overview -->
+                    <div class="bg-cyber-dark border border-cyber-border p-5 clip-corner space-y-4">
+                        <div class="flex items-center justify-between border-b border-cyber-border pb-3">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="calendar-days" class="w-5 h-5 text-cyber-cyan"></i>
+                                <h3 class="font-bold text-white uppercase text-sm tracking-wider">TODAY'S TIMETABLE // СЕГОДНЯ (СРЕДА)</h3>
+                            </div>
+                            <span class="text-xs bg-cyber-green/10 border border-cyber-green text-cyber-green px-2 py-0.5 font-bold">3 LECTURES TODAY</span>
+                        </div>
+
+                        <div class="space-y-3">
+                            <!-- Lecture 1 -->
+                            <div class="p-3 bg-cyber-card border-l-4 border-cyber-green border-t border-r border-b border-cyber-border clip-corner flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                <div class="flex items-center gap-4">
+                                    <div class="text-xs font-bold text-cyber-green bg-cyber-black p-2 border border-cyber-border whitespace-nowrap">
+                                        09:00 - 10:15
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-white text-sm">High-Performance Computing (HPC)</div>
+                                        <div class="text-xs text-gray-400">Lab #402-C // Prof. A. Saparov</div>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] bg-cyber-green/20 text-cyber-green font-bold px-2 py-1 border border-cyber-green uppercase">COMPLETED</span>
+                            </div>
+
+                            <!-- Lecture 2 -->
+                            <div class="p-3 bg-cyber-card border-l-4 border-cyber-pink border-t border-r border-b border-cyber-border clip-corner flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pulse-cyan">
+                                <div class="flex items-center gap-4">
+                                    <div class="text-xs font-bold text-cyber-pink bg-cyber-black p-2 border border-cyber-border whitespace-nowrap">
+                                        11:00 - 12:15
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-white text-sm">Cryptographic Systems & Network Defense</div>
+                                        <div class="text-xs text-gray-400">Lecture Hall #108 // Dr. K. Nurbek</div>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] bg-cyber-pink text-black font-extrabold px-2 py-1 border border-cyber-pink uppercase animate-pulse">IN PROGRESS</span>
+                            </div>
+
+                            <!-- Lecture 3 -->
+                            <div class="p-3 bg-cyber-card border-l-4 border-cyber-yellow border-t border-r border-b border-cyber-border clip-corner flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                <div class="flex items-center gap-4">
+                                    <div class="text-xs font-bold text-cyber-yellow bg-cyber-black p-2 border border-cyber-border whitespace-nowrap">
+                                        14:00 - 15:15
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-white text-sm">Applied Machine Learning & Neural Nets</div>
+                                        <div class="text-xs text-gray-400">Cyber-Lab #305 // Dr. M. Suleimenov</div>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] bg-cyber-card text-gray-400 font-bold px-2 py-1 border border-cyber-border uppercase">UPCOMING</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Academic Tasks & Deadlines Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <!-- Pending Submissions -->
+                        <div class="bg-cyber-dark border border-cyber-border p-4 clip-corner space-y-3">
+                            <div class="flex justify-between items-center border-b border-cyber-border pb-2">
+                                <span class="text-xs text-cyber-pink font-bold uppercase">// PENDING_SUBMISSIONS</span>
+                                <span class="text-[10px] text-gray-500">2 DUE THIS WEEK</span>
+                            </div>
+
+                            <div class="space-y-2 text-xs">
+                                <div class="p-2.5 bg-cyber-card border border-cyber-border flex justify-between items-center">
+                                    <div>
+                                        <div class="text-white font-bold">HPC Lab Assignment 4: CUDA Matrix Mult</div>
+                                        <div class="text-[10px] text-cyber-pink">DUE: OCT 16, 23:59</div>
+                                    </div>
+                                    <button class="px-2 py-1 bg-cyber-pink text-black font-bold text-[10px] hover:bg-cyber-cyan transition-colors">SUBMIT</button>
+                                </div>
+
+                                <div class="p-2.5 bg-cyber-card border border-cyber-border flex justify-between items-center">
+                                    <div>
+                                        <div class="text-white font-bold">Crypto System RSA Implementation</div>
+                                        <div class="text-[10px] text-cyber-yellow">DUE: OCT 19, 23:59</div>
+                                    </div>
+                                    <button class="px-2 py-1 bg-cyber-pink text-black font-bold text-[10px] hover:bg-cyber-cyan transition-colors">SUBMIT</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent System Logs -->
+                        <div class="bg-cyber-dark border border-cyber-border p-4 clip-corner space-y-3">
+                            <div class="flex justify-between items-center border-b border-cyber-border pb-2">
+                                <span class="text-xs text-cyber-green font-bold uppercase">// RECENT_GRADES_LOG</span>
+                                <span class="text-[10px] text-gray-500">UPDATED TODAY</span>
+                            </div>
+
+                            <div class="space-y-2 text-xs">
+                                <div class="p-2 bg-cyber-card border border-cyber-border flex justify-between items-center">
+                                    <span>Applied ML - Quiz #2 Score</span>
+                                    <span class="text-cyber-green font-bold">95 / 100</span>
+                                </div>
+                                <div class="p-2 bg-cyber-card border border-cyber-border flex justify-between items-center">
+                                    <span>Advanced Web Eng - Attestation 1</span>
+                                    <span class="text-cyber-cyan font-bold">98 / 100</span>
+                                </div>
+                                <div class="p-2 bg-cyber-card border border-cyber-border flex justify-between items-center">
+                                    <span>Discrete Math - Colloquium</span>
+                                    <span class="text-cyber-yellow font-bold">88 / 100</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- TAB 2: GRADEBOOK & TRANSCRIPT MODULE (Журнал оценок) -->
+                <div id="tab-grades" class="tab-content hidden space-y-6">
+                    
+                    <div class="bg-cyber-dark border border-cyber-border p-5 clip-corner space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-cyber-border pb-4">
+                            <div>
+                                <h2 class="text-xl font-black text-white uppercase">GRADEBOOK // ЖУРНАЛ УСПЕВАЕМОСТИ</h2>
+                                <p class="text-xs text-gray-400">Current Semester VI Academic Performance Matrix</p>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs">
+                                <span class="px-3 py-1 bg-cyber-green/10 border border-cyber-green text-cyber-green font-bold">STATUS: EXCELLENT</span>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Grade Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs font-mono">
+                                <thead>
+                                    <tr class="bg-cyber-card border-b border-cyber-border text-gray-400 uppercase">
+                                        <th class="p-3">Course / Дисциплина</th>
+                                        <th class="p-3 text-center">R1 (Руб 1)</th>
+                                        <th class="p-3 text-center">R2 (Руб 2)</th>
+                                        <th class="p-3 text-center">Exam (Экз)</th>
+                                        <th class="p-3 text-center">Total (Итог)</th>
+                                        <th class="p-3 text-center">Grade</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-cyber-border/40 text-gray-200">
+                                    
+                                    <tr class="hover:bg-cyber-card/60 transition-colors">
+                                        <td class="p-3 font-bold text-white">
+                                            High-Performance Computing
+                                            <div class="text-[10px] text-gray-500 font-normal">Credits: 5 | Prof. A. Saparov</div>
+                                        </td>
+                                        <td class="p-3 text-center text-cyber-green font-bold">96</td>
+                                        <td class="p-3 text-center text-cyber-green font-bold">94</td>
+                                        <td class="p-3 text-center text-cyber-cyan font-bold">98</td>
+                                        <td class="p-3 text-center text-cyber-green font-black text-sm">96</td>
+                                        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-cyber-green text-black font-extrabold">A</span></td>
+                                    </tr>
+
+                                    <tr class="hover:bg-cyber-card/60 transition-colors">
+                                        <td class="p-3 font-bold text-white">
+                                            Cryptographic Systems & Defense
+                                            <div class="text-[10px] text-gray-500 font-normal">Credits: 5 | Dr. K. Nurbek</div>
+                                        </td>
+                                        <td class="p-3 text-center text-cyber-green font-bold">92</td>
+                                        <td class="p-3 text-center text-cyber-green font-bold">90</td>
+                                        <td class="p-3 text-center text-cyber-cyan font-bold">95</td>
+                                        <td class="p-3 text-center text-cyber-green font-black text-sm">93</td>
+                                        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-cyber-green text-black font-extrabold">A</span></td>
+                                    </tr>
+
+                                    <tr class="hover:bg-cyber-card/60 transition-colors">
+                                        <td class="p-3 font-bold text-white">
+                                            Advanced Web Engineering
+                                            <div class="text-[10px] text-gray-500 font-normal">Credits: 4 | Prof. V. Petrov</div>
+                                        </td>
+                                        <td class="p-3 text-center text-cyber-green font-bold">100</td>
+                                        <td class="p-3 text-center text-cyber-green font-bold">98</td>
+                                        <td class="p-3 text-center text-cyber-cyan font-bold">97</td>
+                                        <td class="p-3 text-center text-cyber-green font-black text-sm">98</td>
+                                        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-cyber-green text-black font-extrabold">A</span></td>
+                                    </tr>
+
+                                    <tr class="hover:bg-cyber-card/60 transition-colors">
+                                        <td class="p-3 font-bold text-white">
+                                            Applied Machine Learning
+                                            <div class="text-[10px] text-gray-500 font-normal">Credits: 5 | Dr. M. Suleimenov</div>
+                                        </td>
+                                        <td class="p-3 text-center text-cyber-green font-bold">88</td>
+                                        <td class="p-3 text-center text-cyber-green font-bold">89</td>
+                                        <td class="p-3 text-center text-cyber-yellow font-bold">91</td>
+                                        <td class="p-3 text-center text-cyber-yellow font-black text-sm">89.5</td>
+                                        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-cyber-yellow text-black font-extrabold">A-</span></td>
+                                    </tr>
+
+                                    <tr class="hover:bg-cyber-card/60 transition-colors">
+                                        <td class="p-3 font-bold text-white">
+                                            Discrete Math & Algorithms
+                                            <div class="text-[10px] text-gray-500 font-normal">Credits: 4 | Dr. E. Baisultanov</div>
+                                        </td>
+                                        <td class="p-3 text-center text-cyber-yellow font-bold">85</td>
+                                        <td class="p-3 text-center text-cyber-yellow font-bold">86</td>
+                                        <td class="p-3 text-center text-cyber-cyan font-bold">88</td>
+                                        <td class="p-3 text-center text-cyber-yellow font-black text-sm">86.5</td>
+                                        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-cyber-cyan text-black font-extrabold">B+</span></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Live Grade Predictor Calculator -->
+                    <div class="bg-cyber-dark border border-cyber-border p-5 clip-corner space-y-4">
+                        <div class="flex items-center gap-2 border-b border-cyber-border pb-2">
+                            <i data-lucide="calculator" class="w-5 h-5 text-cyber-pink"></i>
+                            <h3 class="font-bold text-white uppercase text-sm">// WHAT-IF EXAM PREDICTOR CALCULATOR</h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                            <div class="space-y-2">
+                                <label class="text-xs text-gray-400 uppercase">SELECT SUBJECT</label>
+                                <select id="calc-subject" class="w-full bg-cyber-black border border-cyber-border p-2.5 text-xs text-cyber-cyan focus:outline-none">
+                                    <option value="95">High-Performance Computing (Current R1+R2: 95)</option>
+                                    <option value="91">Cryptographic Systems (Current R1+R2: 91)</option>
+                                    <option value="88.5">Applied Machine Learning (Current R1+R2: 88.5)</option>
+                                </select>
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-gray-400 uppercase">ESTIMATED EXAM SCORE</span>
+                                    <span id="slider-val" class="text-cyber-pink font-bold">85 / 100</span>
+                                </div>
+                                <input type="range" id="calc-slider" min="0" max="100" value="85" class="w-full accent-cyber-pink bg-cyber-black cursor-pointer">
+                            </div>
+
+                            <div class="p-4 bg-cyber-card border border-cyber-pink text-center clip-corner">
+                                <div class="text-[10px] text-gray-400 uppercase">PREDICTED FINAL SCORE</div>
+                                <div id="calc-result" class="text-3xl font-black text-cyber-green mt-1">91.0 (A)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- TAB 3: SCHEDULE / TIMETABLE -->
+                <div id="tab-schedule" class="tab-content hidden space-y-6">
+                    <div class="bg-cyber-dark border border-cyber-border p-5 clip-corner space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-cyber-border pb-4">
+                            <div>
+                                <h2 class="text-xl font-black text-white uppercase">WEEKLY TIMETABLE // РАСПИСАНИЕ ЗАНЯТИЙ</h2>
+                                <p class="text-xs text-gray-400">Semester VI Academic Schedule Matrix</p>
+                            </div>
+                            
+                            <!-- Day Selector Buttons -->
+                            <div class="flex flex-wrap gap-1" id="day-selector">
+                                <button class="px-3 py-1 text-xs font-bold bg-cyber-card border border-cyber-border text-gray-400 hover:text-white">MON</button>
+                                <button class="px-3 py-1 text-xs font-bold bg-cyber-card border border-cyber-border text-gray-400 hover:text-white">TUE</button>
+                                <button class="px-3 py-1 text-xs font-bold bg-cyber-cyan border border-cyber-cyan text-black font-extrabold">WED</button>
+                                <button class="px-3 py-1 text-xs font-bold bg-cyber-card border border-cyber-border text-gray-400 hover:text-white">THU</button>
+                                <button class="px-3 py-1 text-xs font-bold bg-cyber-card border border-cyber-border text-gray-400 hover:text-white">FRI</button>
+                            </div>
+                        </div>
+
+                        <!-- Schedule Cards -->
+                        <div class="space-y-4">
+                            
+                            <!-- Slot 1 -->
+                            <div class="p-4 bg-cyber-card border border-cyber-border hover:border-cyber-cyan transition-all clip-corner grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                                <div class="md:col-span-3">
+                                    <div class="text-cyber-cyan font-bold text-sm">09:00 - 10:15</div>
+                                    <div class="text-[10px] text-gray-500">PERIOD 1 // 75 MIN</div>
+                                </div>
+                                <div class="md:col-span-6 space-y-1">
+                                    <div class="text-white font-bold text-base">High-Performance Computing</div>
+                                    <div class="text-xs text-gray-400">Lab Practice // Prof. A. Saparov</div>
+                                </div>
+                                <div class="md:col-span-3 text-right">
+                                    <span class="inline-block px-3 py-1 bg-cyber-black text-cyber-green border border-cyber-green font-bold text-xs clip-corner">
+                                        ROOM #402-C
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Slot 2 -->
+                            <div class="p-4 bg-cyber-card border border-cyber-pink/80 hover:border-cyber-pink transition-all clip-corner grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                                <div class="md:col-span-3">
+                                    <div class="text-cyber-pink font-bold text-sm">11:00 - 12:15</div>
+                                    <div class="text-[10px] text-gray-500">PERIOD 2 // 75 MIN</div>
+                                </div>
+                                <div class="md:col-span-6 space-y-1">
+                                    <div class="text-white font-bold text-base">Cryptographic Systems & Defense</div>
+                                    <div class="text-xs text-gray-400">Lecture // Dr. K. Nurbek</div>
+                                </div>
+                                <div class="md:col-span-3 text-right">
+                                    <span class="inline-block px-3 py-1 bg-cyber-black text-cyber-pink border border-cyber-pink font-bold text-xs clip-corner">
+                                        HALL #108
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Slot 3 -->
+                            <div class="p-4 bg-cyber-card border border-cyber-border hover:border-cyber-yellow transition-all clip-corner grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                                <div class="md:col-span-3">
+                                    <div class="text-cyber-yellow font-bold text-sm">14:00 - 15:15</div>
+                                    <div class="text-[10px] text-gray-500">PERIOD 3 // 75 MIN</div>
+                                </div>
+                                <div class="md:col-span-6 space-y-1">
+                                    <div class="text-white font-bold text-base">Applied Machine Learning</div>
+                                    <div class="text-xs text-gray-400">Seminar // Dr. M. Suleimenov</div>
+                                </div>
+                                <div class="md:col-span-3 text-right">
+                                    <span class="inline-block px-3 py-1 bg-cyber-black text-cyber-yellow border border-cyber-yellow font-bold text-xs clip-corner">
+                                        CYBER-LAB #305
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: TESTING & QUIZ TERMINAL (Онлайн-тестирование) -->
+                <div id="tab-testing" class="tab-content hidden space-y-6">
+                    <div class="bg-cyber-dark border border-cyber-border p-5 clip-corner space-y-6 relative">
+                        
+                        <!-- Top HUD Bar -->
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-cyber-border pb-4">
+                            <div>
+                                <div class="text-[10px] text-cyber-pink font-bold tracking-widest uppercase">// TESTING TERMINAL</div>
+                                <h2 class="text-xl font-black text-white uppercase">MIDTERM QUIZ: CRYPTOGRAPHIC SYSTEMS</h2>
+                            </div>
+
+                            <!-- Telemetry HUD Badge -->
+                            <div class="flex items-center gap-4">
+                                <div class="text-right">
+                                    <div class="text-[10px] text-gray-400">TIME REMAINING</div>
+                                    <div id="timer" class="text-xl font-black text-cyber-pink font-mono">24:59</div>
+                                </div>
+                                <div class="px-3 py-1 bg-cyber-pink/20 border border-cyber-pink text-cyber-pink text-xs font-bold">
+                                    PROCTORING: ACTIVE
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quiz Body Simulator -->
+                        <div class="bg-cyber-card border border-cyber-border p-6 space-y-6 clip-corner">
+                            
+                            <div class="flex justify-between items-center text-xs text-gray-400 border-b border-cyber-border/50 pb-2">
+                                <span>QUESTION 04 OF 10</span>
+                                <span>WEIGHT: 10 POINTS</span>
+                            </div>
+
+                            <p class="text-white text-sm sm:text-base font-bold leading-relaxed">
+                                Which asymmetric cryptographic algorithm relies on the mathematical difficulty of computing discrete logarithms in a finite field?
+                            </p>
+
+                            <!-- Options -->
+                            <div class="space-y-3" id="quiz-options">
+                                <label class="flex items-center gap-3 p-3 bg-cyber-black border border-cyber-border hover:border-cyber-cyan cursor-pointer transition-colors clip-corner">
+                                    <input type="radio" name="quiz" class="accent-cyber-cyan">
+                                    <span class="text-xs text-gray-200">A. RSA Encryption Algorithm</span>
+                                </label>
+
+                                <label class="flex items-center gap-3 p-3 bg-cyber-black border border-cyber-border hover:border-cyber-cyan cursor-pointer transition-colors clip-corner">
+                                    <input type="radio" name="quiz" class="accent-cyber-cyan">
+                                    <span class="text-xs text-gray-200">B. Diffie-Hellman Key Exchange / ElGamal</span>
+                                </label>
+
+                                <label class="flex items-center gap-3 p-3 bg-cyber-black border border-cyber-border hover:border-cyber-cyan cursor-pointer transition-colors clip-corner">
+                                    <input type="radio" name="quiz" class="accent-cyber-cyan">
+                                    <span class="text-xs text-gray-200">C. Advanced Encryption Standard (AES-256)</span>
+                                </label>
+
+                                <label class="flex items-center gap-3 p-3 bg-cyber-black border border-cyber-border hover:border-cyber-cyan cursor-pointer transition-colors clip-corner">
+                                    <input type="radio" name="quiz" class="accent-cyber-cyan">
+                                    <span class="text-xs text-gray-200">D. SHA-3 Hashing Function</span>
+                                </label>
+                            </div>
+
+                            <!-- Question Navigation Grid -->
+                            <div class="pt-4 border-t border-cyber-border flex flex-col sm:flex-row justify-between items-center gap-4">
+                                <div class="flex gap-2">
+                                    <span class="w-7 h-7 bg-cyber-green text-black font-extrabold text-xs flex items-center justify-center">1</span>
+                                    <span class="w-7 h-7 bg-cyber-green text-black font-extrabold text-xs flex items-center justify-center">2</span>
+                                    <span class="w-7 h-7 bg-cyber-green text-black font-extrabold text-xs flex items-center justify-center">3</span>
+                                    <span class="w-7 h-7 bg-cyber-pink text-black font-extrabold text-xs flex items-center justify-center">4</span>
+                                    <span class="w-7 h-7 bg-cyber-black border border-cyber-border text-gray-500 text-xs flex items-center justify-center">5</span>
+                                </div>
+
+                                <button id="submit-quiz-btn" class="px-6 py-2.5 bg-cyber-green hover:bg-cyber-cyan text-black font-extrabold text-xs tracking-wider uppercase transition-all clip-corner">
+                                    SUBMIT TRANSMISSION
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- TAB 5: FINANCE & TUITION (Оплата обучения) -->
+                <div id="tab-finance" class="tab-content hidden space-y-6">
+                    <div class="bg-cyber-dark border border-cyber-border p-5 clip-corner space-y-6">
+                        <div class="border-b border-cyber-border pb-4">
+                            <h2 class="text-xl font-black text-white uppercase">FINANCIAL PORTAL // ОПЛАТА ОБУЧЕНИЯ</h2>
+                            <p class="text-xs text-gray-400">Tuition Contracts & Payment Gateway</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-cyber-card p-4 border border-cyber-border clip-corner">
+                                <div class="text-[10px] text-gray-500 uppercase">TOTAL ANNUAL CONTRACT</div>
+                                <div class="text-2xl font-black text-white mt-1">1,200,000 KZT</div>
+                                <div class="text-[10px] text-cyber-green mt-2">CONTRACT #2024-80492</div>
+                            </div>
+
+                            <div class="bg-cyber-card p-4 border border-cyber-border clip-corner">
+                                <div class="text-[10px] text-gray-500 uppercase">PAID TO DATE</div>
+                                <div class="text-2xl font-black text-cyber-green mt-1">900,000 KZT</div>
+                                <div class="text-[10px] text-gray-400 mt-2">75% COMPLETED</div>
+                            </div>
+
+                            <div class="bg-cyber-card p-4 border border-cyber-pink clip-corner">
+                                <div class="text-[10px] text-cyber-pink uppercase font-bold">REMAINING BALANCE DUE</div>
+                                <div class="text-2xl font-black text-cyber-pink mt-1">300,000 KZT</div>
+                                <div class="text-[10px] text-gray-400 mt-2">DEADLINE: OCT 25, 2026</div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-cyber-card border border-cyber-border clip-corner flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                                <div class="font-bold text-white text-sm">INSTALLMENT #3 PAYMENT</div>
+                                <div class="text-xs text-gray-400">Pay directly via Cyber-Kaspipay or Card</div>
+                            </div>
+                            <button class="px-6 py-3 bg-cyber-pink hover:bg-cyber-cyan text-black font-extrabold text-xs tracking-wider uppercase transition-all clip-corner shadow-neon-pink">
+                                INITIATE PAYMENT (300,000 KZT)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // 1. Initialize Lucide Icons
+        lucide.createIcons();
+
+        // 2. Animated Particle Matrix Background
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class NodeParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.vx = (Math.random() - 0.5) * 0.6;
+                this.vy = (Math.random() - 0.5) * 0.6;
+                this.color = Math.random() > 0.5 ? '#00f0ff' : '#ff0055';
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, this.size, this.size);
+            }
+        }
+
+        for (let i = 0; i < 60; i++) {
+            particles.push(new NodeParticle());
+        }
+
+        function renderCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(renderCanvas);
+        }
+        renderCanvas();
+
+        // 3. Custom Cursor Track
+        const cursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+        });
+
+        // 4. Sound Engine (Web Audio API Synthesizer)
+        let audioActive = false;
+        let audioCtx;
+
+        const soundBtn = document.getElementById('sound-toggle');
+        const soundOffIcon = document.getElementById('sound-off');
+        const soundOnIcon = document.getElementById('sound-on');
+
+        function playBeep(freq = 440, type = 'sine') {
+            if (!audioActive) return;
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        soundBtn.addEventListener('click', () => {
+            audioActive = !audioActive;
+            if (audioActive) {
+                soundOffIcon.classList.add('hidden');
+                soundOnIcon.classList.remove('hidden');
+                playBeep(880, 'square');
+            } else {
+                soundOffIcon.classList.remove('hidden');
+                soundOnIcon.classList.add('hidden');
+            }
+        });
+
+        document.querySelectorAll('button, input, select, .quick-link').forEach(el => {
+            el.addEventListener('mouseenter', () => playBeep(300, 'sine'));
+            el.addEventListener('click', () => playBeep(600, 'square'));
+        });
+
+        // 5. Visual Glitch Overdrive Toggle
+        const glitchBtn = document.getElementById('glitch-toggle');
+        const logoText = document.getElementById('logo-text');
+        
+        glitchBtn.addEventListener('click', () => {
+            logoText.classList.toggle('glitch-active');
+            playBeep(1200, 'sawtooth');
+        });
+
+        // 6. Tab Navigation Logic
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        function switchTab(tabId) {
+            tabContents.forEach(content => content.classList.add('hidden'));
+            const activeTab = document.getElementById(tabId);
+            if (activeTab) activeTab.classList.remove('hidden');
+
+            navBtns.forEach(btn => {
+                if (btn.getAttribute('data-tab') === tabId) {
+                    btn.classList.add('border-cyber-cyan', 'bg-cyber-cyan/10', 'text-cyber-cyan');
+                    btn.classList.remove('border-cyber-border', 'bg-cyber-card', 'text-gray-400');
+                } else {
+                    btn.classList.remove('border-cyber-cyan', 'bg-cyber-cyan/10', 'text-cyber-cyan');
+                    btn.classList.add('border-cyber-border', 'bg-cyber-card', 'text-gray-400');
+                }
+            });
+        }
+
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                switchTab(tabId);
+            });
+        });
+
+        document.querySelectorAll('.quick-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const targetTab = link.getAttribute('data-target');
+                if (targetTab) switchTab(targetTab);
+            });
+        });
+
+        // 7. Interactive Grade Calculator
+        const calcSubject = document.getElementById('calc-subject');
+        const calcSlider = document.getElementById('calc-slider');
+        const sliderVal = document.getElementById('slider-val');
+        const calcResult = document.getElementById('calc-result');
+
+        function updatePrediction() {
+            const currentAtt = parseFloat(calcSubject.value);
+            const examVal = parseFloat(calcSlider.value);
+            sliderVal.textContent = `${examVal} / 100`;
+
+            const finalScore = (currentAtt * 0.6) + (examVal * 0.4);
+            let gradeLetter = 'F';
+            if (finalScore >= 95) gradeLetter = 'A';
+            else if (finalScore >= 90) gradeLetter = 'A-';
+            else if (finalScore >= 85) gradeLetter = 'B+';
+            else if (finalScore >= 80) gradeLetter = 'B';
+            else if (finalScore >= 75) gradeLetter = 'B-';
+
+            calcResult.textContent = `${finalScore.toFixed(1)} (${gradeLetter})`;
+        }
+
+        if (calcSlider && calcSubject) {
+            calcSlider.addEventListener('input', updatePrediction);
+            calcSubject.addEventListener('change', updatePrediction);
+        }
+
+        // 8. Command Line Terminal Simulator
+        const cliForm = document.getElementById('cli-form');
+        const cliInput = document.getElementById('cli-input');
+        const cliOutput = document.getElementById('cli-output');
+
+        cliForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const cmd = cliInput.value.trim().toLowerCase();
+            cliInput.value = '';
+
+            const pCmd = document.createElement('p');
+            pCmd.className = 'text-cyber-pink font-bold';
+            pCmd.textContent = `$ ${cmd}`;
+            cliOutput.appendChild(pCmd);
+
+            const pRes = document.createElement('p');
+
+            if (cmd === 'help') {
+                pRes.className = 'text-cyber-cyan';
+                pRes.textContent = 'AVAILABLE COMMANDS: [gpa, grades, schedule, matrix, clear]';
+            } else if (cmd === 'gpa') {
+                pRes.className = 'text-cyber-green';
+                pRes.textContent = 'CUMULATIVE GPA: 3.92 / 4.00 (HONORS RANK)';
+            } else if (cmd === 'grades') {
+                pRes.className = 'text-cyber-yellow';
+                pRes.textContent = 'HPC: 96 (A) | CRYPTO: 93 (A) | WEB: 98 (A) | ML: 89.5 (A-)';
+            } else if (cmd === 'schedule') {
+                pRes.className = 'text-gray-300';
+                pRes.textContent = 'NEXT CLASS: ML Seminar @ 14:00 (CYBER-LAB #305)';
+            } else if (cmd === 'clear') {
+                cliOutput.innerHTML = '';
+                return;
+            } else {
+                pRes.className = 'text-red-400';
+                pRes.textContent = `UNRECOGNIZED COMMAND: '${cmd}'. TYPE 'help'.`;
+            }
+
+            cliOutput.appendChild(pRes);
+            cliOutput.scrollTop = cliOutput.scrollHeight;
+        });
+
+        // 9. Countdown Timer Simulator for Test Terminal
+        let totalSeconds = 1500;
+        const timerEl = document.getElementById('timer');
+
+        setInterval(() => {
+            if (totalSeconds > 0) {
+                totalSeconds--;
+                const mins = Math.floor(totalSeconds / 60);
+                const secs = totalSeconds % 60;
+                if (timerEl) {
+                    timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                }
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
