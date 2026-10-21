@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>СРО Вариант 13 - Help Desk (Сервис заявок техподдержки)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f0f2f5;
+      color: #333;
+      padding: 30px 15px;
+    }
+
+    .app-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #1a73e8;
+      font-size: 26px;
+    }
+
+    /* Форма создания */
+    .form-section {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+      margin-bottom: 25px;
+    }
+
+    .form-section h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #495057;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6c757d;
+    }
+
+    input, select, textarea {
+      padding: 10px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #1a73e8;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+      grid-column: 1 / -1;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary {
+      background-color: #1a73e8;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #1557b0;
+    }
+
+    /* Фильтры и поиск */
+    .controls-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f2f5;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Карточки заявок */
+    .tickets-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .ticket-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-left: 5px solid #6c757d;
+      border-radius: 8px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+
+    .ticket-card.priority-Низкий { border-left-color: #28a745; }
+    .ticket-card.priority-Средний { border-left-color: #ffc107; }
+    .ticket-card.priority-Высокий { border-left-color: #dc3545; }
+
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ticket-id-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ticket-id {
+      background: #e9ecef;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #495057;
+    }
+
+    .ticket-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .badge-status {
+      background-color: #e7f1ff;
+      color: #1a73e8;
+    }
+
+    .badge-priority {
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+    }
+
+    .ticket-meta {
+      font-size: 13px;
+      color: #6c757d;
+      display: flex;
+      gap: 15px;
+    }
+
+    .ticket-desc {
+      font-size: 14px;
+      color: #495057;
+      line-height: 1.4;
+    }
+
+    .ticket-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #f0f2f5;
+    }
+
+    .status-select {
+      padding: 5px 10px;
+      font-size: 13px;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      color: white;
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .btn-danger:hover {
+      background-color: #bd2130;
+    }
+
+    .empty-msg {
+      text-align: center;
+      color: #888;
+      padding: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <h1>Сервис заявок технической поддержки (Help Desk)</h1>
+
+    <!-- Форма создания заявки -->
+    <div class="form-section">
+      <h2>Создать новую заявку</h2>
+      <form id="create-ticket-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="author">Имя заявителя *</label>
+            <input type="text" id="author" placeholder="Например: Иван Иванов" required>
+          </div>
+          <div class="form-group">
+            <label for="topic">Тема проблемы *</label>
+            <input type="text" id="topic" placeholder="Например: Не работает принтер" required>
+          </div>
+          <div class="form-group">
+            <label for="priority">Приоритет</label>
+            <select id="priority">
+              <option value="Низкий">Низкий</option>
+              <option value="Средний" selected>Средний</option>
+              <option value="Высокий">Высокий</option>
+            </select>
+          </div>
+          <textarea id="description" placeholder="Подробное описание проблемы..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Подать заявку</button>
+      </form>
+    </div>
+
+    <!-- Поиск и фильтры -->
+    <div class="controls-section">
+      <input type="text" id="search-input" class="search-box" placeholder="Поиск по теме, автору или ID...">
+      <div class="filters">
+        <select id="filter-status">
+          <option value="Все">Все статусы</option>
+          <option value="Новая">Новая</option>
+          <option value="В работе">В работе</option>
+          <option value="Решена">Решена</option>
+          <option value="Закрыта">Закрыта</option>
+        </select>
+        <select id="filter-priority">
+          <option value="Все">Все приоритеты</option>
+          <option value="Низкий">Низкий</option>
+          <option value="Средний">Средний</option>
+          <option value="Высокий">Высокий</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Список заявок -->
+    <div id="tickets-container" class="tickets-list"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Ключ для LocalStorage
+      const STORAGE_KEY = "helpdesk_tickets_db";
+
+      // Элементы интерфейса
+      const form = document.querySelector("#create-ticket-form");
+      const ticketsContainer = document.querySelector("#tickets-container");
+      const searchInput = document.querySelector("#search-input");
+      const filterStatus = document.querySelector("#filter-status");
+      const filterPriority = document.querySelector("#filter-priority");
+
+      // Массив для хранения данных заявок
+      let tickets = [];
+
+      // 1. Безопасная загрузка данных из localStorage (Десериализация JSON)
+      function loadTickets() {
+        try {
+          const rawData = localStorage.getItem(STORAGE_KEY);
+          tickets = rawData ? JSON.parse(rawData) : getDemoData();
+        } catch (e) {
+          console.error("Ошибка при чтении JSON из localStorage:", e);
+          tickets = getDemoData();
+        }
+      }
+
+      // Начальные тестовые данные, если хранилище пустое
+      function getDemoData() {
+        return [
+          {
+            id: 101,
+            author: "Алексей Смирнов",
+            topic: "Не открывается почтовый клиент",
+            priority: "Высокий",
+            status: "В работе",
+            description: "При запуске программы выходит ошибка соединения с сервером.",
+            date: "2026-10-20"
+          },
+          {
+            id: 102,
+            author: "Мария Петрова",
+            topic: "Замена картриджа в каб. 304",
+            priority: "Низкий",
+            status: "Новая",
+            description: "Принтер печатает с полосами, закончился тонер.",
+            date: "2026-10-21"
+          }
+        ];
+      }
+
+      // 2. Сохранение данных в localStorage (Сериализация JSON)
+      function saveTickets() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tickets));
+        render();
+      }
+
+      // 3. Создание новой заявки
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const author = document.querySelector("#author").value.trim();
+        const topic = document.querySelector("#topic").value.trim();
+        const priority = document.querySelector("#priority").value;
+        const description = document.querySelector("#description").value.trim();
+
+        // Проверка ввода
+        if (!author || !topic || !description) {
+          alert("Пожалуйста, заполните все обязательные поля!");
+          return;
+        }
+
+        const newTicket = {
+          id: Date.now() % 100000, // Генерируем уникальный короткий ID
+          author: author,
+          topic: topic,
+          priority: priority,
+          status: "Новая",
+          description: description,
+          date: new Date().toISOString().split('T')[0]
+        };
+
+        tickets.unshift(newTicket); // Добавляем в начало списка
+        saveTickets();
+        form.reset();
+      });
+
+      // 4. Изменение статуса заявки
+      window.changeStatus = function(id, newStatus) {
+        tickets = tickets.map(ticket => {
+          if (ticket.id === id) {
+            return { ...ticket, status: newStatus };
+          }
+          return ticket;
+        });
+        saveTickets();
+      };
+
+      // 5. Удаление заявки
+      window.deleteTicket = function(id) {
+        if (confirm("Вы действительно хотите удалить эту заявку?")) {
+          tickets = tickets.filter(ticket => ticket.id !== id);
+          saveTickets();
+        }
+      };
+
+      // 6. Отрисовка списка заявок с учетом поиска и фильтрации
+      function render() {
+        ticketsContainer.innerHTML = "";
+
+        const searchQuery = searchInput.value.toLowerCase().trim();
+        const selectedStatus = filterStatus.value;
+        const selectedPriority = filterPriority.value;
+
+        // Фильтрация массива
+        const filteredTickets = tickets.filter(ticket => {
+          const matchesSearch = 
+            ticket.topic.toLowerCase().includes(searchQuery) ||
+            ticket.author.toLowerCase().includes(searchQuery) ||
+            ticket.id.toString().includes(searchQuery);
+
+          const matchesStatus = selectedStatus === "Все" || ticket.status === selectedStatus;
+          const matchesPriority = selectedPriority === "Все" || ticket.priority === selectedPriority;
+
+          return matchesSearch && matchesStatus && matchesPriority;
+        });
+
+        if (filteredTickets.length === 0) {
+          ticketsContainer.innerHTML = `<div class="empty-msg">Заявки не найдены.</div>`;
+          return;
+        }
+
+        // Цикл отрисовки элементов
+        filteredTickets.forEach(ticket => {
+          const card = document.createElement("div");
+          card.className = `ticket-card priority-${ticket.priority}`;
+
+          card.innerHTML = `
+            <div class="ticket-header">
+              <div class="ticket-id-title">
+                <span class="ticket-id">#${ticket.id}</span>
+                <span class="ticket-title">${escapeHtml(ticket.topic)}</span>
+              </div>
+              <div>
+                <span class="badge badge-priority">Приоритет: ${ticket.priority}</span>
+                <span class="badge badge-status">${ticket.status}</span>
+              </div>
+            </div>
+            
+            <div class="ticket-meta">
+              <span>👤 <strong>Заявитель:</strong> ${escapeHtml(ticket.author)}</span>
+              <span>📅 <strong>Дата:</strong> ${ticket.date}</span>
+            </div>
+
+            <div class="ticket-desc">${escapeHtml(ticket.description)}</div>
+
+            <div class="ticket-actions">
+              <div>
+                <label style="font-size:13px;">Изменить статус: </label>
+                <select class="status-select" onchange="changeStatus(${ticket.id}, this.value)">
+                  <option value="Новая" ${ticket.status === 'Новая' ? 'selected' : ''}>Новая</option>
+                  <option value="В работе" ${ticket.status === 'В работе' ? 'selected' : ''}>В работе</option>
+                  <option value="Решена" ${ticket.status === 'Решена' ? 'selected' : ''}>Решена</option>
+                  <option value="Закрыта" ${ticket.status === 'Закрыта' ? 'selected' : ''}>Закрыта</option>
+                </select>
+              </div>
+              <button class="btn btn-danger" onclick="deleteTicket(${ticket.id})">Удалить</button>
+            </div>
+          `;
+
+          ticketsContainer.appendChild(card);
+        });
+      }
+
+      // Вспомогательная функция защиты от XSS
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      // Подключение слушателей для поиска и фильтров
+      searchInput.addEventListener("input", render);
+      filterStatus.addEventListener("change", render);
+      filterPriority.addEventListener("change", render);
+
+      // Запуск при старте
+      loadTickets();
+      render();
+    });
+  </script>
+</body>
+</html>
