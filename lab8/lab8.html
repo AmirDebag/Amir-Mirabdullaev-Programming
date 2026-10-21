@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Лабораторная работа №8 - To-Do List</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background-color: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .container {
+      background: white;
+      width: 100%;
+      max-width: 500px;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+      font-size: 22px;
+    }
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .filter-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .filter-btn {
+      background-color: #e9ecef;
+      color: #495057;
+    }
+    .filter-btn.active {
+      background-color: #007bff;
+      color: white;
+    }
+    #task-list {
+      list-style: none;
+    }
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .task-item.completed span {
+      text-decoration: line-through;
+      color: #888;
+    }
+    .task-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .delete-btn {
+      background-color: #dc3545;
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+    .delete-btn:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Список задач (To-Do)</h1>
+
+    <div class="input-group">
+      <input type="text" id="task-input" placeholder="Введите название задачи...">
+      <button id="add-btn">Добавить</button>
+    </div>
+
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all">Все</button>
+      <button class="filter-btn" data-filter="active">Активные</button>
+      <button class="filter-btn" data-filter="completed">Завершенные</button>
+    </div>
+
+    <ul id="task-list"></ul>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const taskInput = document.querySelector("#task-input");
+      const addBtn = document.querySelector("#add-btn");
+      const taskList = document.querySelector("#task-list");
+      const filterBtns = document.querySelectorAll(".filter-btn");
+
+      const STORAGE_KEY = "lab8_todo_tasks";
+      let tasks = [];
+      let currentFilter = "all";
+
+      // Безопасная загрузка из localStorage
+      try {
+        const savedData = localStorage.getItem(STORAGE_KEY);
+        const parsed = savedData ? JSON.parse(savedData) : [];
+        tasks = Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        console.error("Ошибка десериализации JSON:", e);
+        tasks = [];
+      }
+
+      function saveTasks() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+        render();
+      }
+
+      function render() {
+        taskList.innerHTML = ""; // Очищаем список перед отрисовкой
+
+        const filteredTasks = tasks.filter((task) => {
+          if (currentFilter === "active") return !task.completed;
+          if (currentFilter === "completed") return task.completed;
+          return true;
+        });
+
+        filteredTasks.forEach((task) => {
+          const li = document.createElement("li");
+          li.className = `task-item ${task.completed ? "completed" : ""}`;
+
+          const contentDiv = document.createElement("div");
+          contentDiv.className = "task-content";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = task.completed;
+          checkbox.addEventListener("change", () => toggleTask(task.id));
+
+          const textSpan = document.createElement("span");
+          textSpan.textContent = task.text;
+
+          contentDiv.append(checkbox, textSpan);
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.className = "delete-btn";
+          deleteBtn.textContent = "Удалить";
+          deleteBtn.addEventListener("click", () => deleteTask(task.id));
+
+          li.append(contentDiv, deleteBtn);
+          taskList.append(li);
+        });
+      }
+
+      function addTask() {
+        const text = taskInput.value.trim();
+        if (!text) return; // Если инпут пустой — ничего не делаем
+
+        const newTask = {
+          id: Date.now(),
+          text: text,
+          completed: false
+        };
+
+        tasks.push(newTask);
+        taskInput.value = "";
+        saveTasks();
+      }
+
+      function toggleTask(id) {
+        tasks = tasks.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t));
+        saveTasks();
+      }
+
+      function deleteTask(id) {
+        tasks = tasks.filter((t) => t.id !== id);
+        saveTasks();
+      }
+
+      // События
+      addBtn.addEventListener("click", addTask);
+
+      taskInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          addTask();
+        }
+      });
+
+      filterBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          filterBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentFilter = btn.dataset.filter;
+          render();
+        });
+      });
+
+      // Первичный запуск отрисовки
+      render();
+    });
+  </script>
+
+</body>
+</html>
